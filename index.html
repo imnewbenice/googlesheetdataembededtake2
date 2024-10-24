@@ -93,10 +93,10 @@
           // Skip the header row (rows[0]) and start from row[1]
           for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            const fullName = row[0];  // First column in your sheet (Full Name)
-            const jobTitle = row[1];  // Second column (Job Title)
-            const department = row[2];  // Third column (Department)
-            const annualSalary = parseFloat(row[3]);  // Fourth column (Annual Salary)
+            const fullName = row[1];  // second column in your sheet (Full Name)
+            const jobTitle = row[2];  // third column (Job Title)
+            const department = row[3];  // fourth column (Department)
+            const annualSalary = parseFloat(row[9]);  // tenth column (Annual Salary)
 
             // Append data to the table
             $('#employee-table tbody').append(`
