@@ -8,6 +8,9 @@
   <!-- DataTables CSS for table styling -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
+  <!-- Chart.js for generating charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- jQuery for DOM manipulation -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
@@ -84,15 +87,18 @@
         .then(data => {
           const rows = data.values;  // Google Sheets data is under 'values' key
 
+          const chartLabels = [];  // For Department names
+          const chartData = [];  // For Annual Salaries
+
           // Skip the header row (rows[0]) and start from row[1]
           for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            const fullName = row[0];  // First column in your sheet
-            const jobTitle = row[1];  // Second column in your sheet
-            const department = row[2];  // Third column in your sheet
-            const annualSalary = row[3];  // Fourth column in your sheet
+            const fullName = row[0];  // First column in your sheet (Full Name)
+            const jobTitle = row[1];  // Second column (Job Title)
+            const department = row[2];  // Third column (Department)
+            const annualSalary = parseFloat(row[3]);  // Fourth column (Annual Salary)
 
-            // Append the row to the table
+            // Append data to the table
             $('#employee-table tbody').append(`
               <tr>
                 <td>${fullName}</td>
@@ -101,10 +107,41 @@
                 <td>${annualSalary}</td>
               </tr>
             `);
+
+            // Prepare data for the chart (Departments and Annual Salaries)
+            chartLabels.push(department);  // Add department to labels
+            chartData.push(annualSalary);  // Add salary to data
           }
 
           // Initialize DataTable for table interactivity
           $('#employee-table').DataTable();
+
+          // Log chart data to console (for debugging)
+          console.log('Departments:', chartLabels);
+          console.log('Annual Salaries:', chartData);
+
+          // Create the Chart.js bar chart for Salary by Department
+          const ctx = document.getElementById('salaryChart').getContext('2d');
+          const salaryChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: chartLabels,  // Department names on x-axis
+              datasets: [{
+                label: 'Annual Salary by Department',
+                data: chartData,  // Salary values on y-axis
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
         })
         .catch(error => console.error('Error fetching data:', error));
     });
