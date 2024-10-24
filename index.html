@@ -96,7 +96,10 @@
             const fullName = row[1];  // second column in your sheet (Full Name)
             const jobTitle = row[2];  // third column (Job Title)
             const department = row[3];  // fourth column (Department)
-            const annualSalary = parseFloat(row[9]);  // tenth column (Annual Salary)
+            const annualSalary = parseFloat(row[9]);  // tenth column Convert salary to number
+
+            // Format salary with dollar sign and commas for display in the table
+            const formattedSalary = `$${annualSalary.toLocaleString('en-US')}`;
 
             // Append data to the table
             $('#employee-table tbody').append(`
@@ -104,21 +107,17 @@
                 <td>${fullName}</td>
                 <td>${jobTitle}</td>
                 <td>${department}</td>
-                <td>${annualSalary}</td>
+                <td>${formattedSalary}</td>
               </tr>
             `);
 
-            // Prepare data for the chart (Departments and Annual Salaries)
+            // Prepare data for the chart (Departments and raw Annual Salaries)
             chartLabels.push(department);  // Add department to labels
-            chartData.push(annualSalary);  // Add salary to data
+            chartData.push(annualSalary);  // Add salary (numeric) to data
           }
 
           // Initialize DataTable for table interactivity
           $('#employee-table').DataTable();
-
-          // Log chart data to console (for debugging)
-          console.log('Departments:', chartLabels);
-          console.log('Annual Salaries:', chartData);
 
           // Create the Chart.js bar chart for Salary by Department
           const ctx = document.getElementById('salaryChart').getContext('2d');
@@ -128,7 +127,7 @@
               labels: chartLabels,  // Department names on x-axis
               datasets: [{
                 label: 'Annual Salary by Department',
-                data: chartData,  // Salary values on y-axis
+                data: chartData,  // Salary values on y-axis (raw numeric)
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
